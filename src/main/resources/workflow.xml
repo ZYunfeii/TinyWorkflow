@@ -1,0 +1,22 @@
+<workflow>
+    <nodes>
+        <start-node id="start" />
+        <task-node id="task1">
+            <assignee>com.yunfei.tinyworkflow.task.TestTask_1</assignee>
+        </task-node>
+        <decision-node id="decision">
+        </decision-node>
+        <task-node id="task2">
+            <assignee>com.yunfei.tinyworkflow.task.TestTask_2</assignee>
+        </task-node>
+        <end-node id="end" />
+    </nodes>
+
+    <transitions>
+        <transition from="start" to="task1" />
+        <transition from="task1" to="decision" />
+        <transition from="decision" to="task2" on="approve" />
+        <transition from="decision" to="end" on="reject" />
+        <transition from="task2" to="end" />
+    </transitions>
+</workflow>
