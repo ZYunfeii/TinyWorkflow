@@ -1,4 +1,8 @@
 package com.yunfei.tinyworkflow.engine;
 
-public class WfContext {
+import lombok.Data;
+
+@Data
+public class WfContext<T> {
+    T result;
 }

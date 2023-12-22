@@ -13,4 +13,5 @@ public class DecisionNode extends WfNode{
     {
         nodeType = NodeType.DECISION;
     }
+
 }
