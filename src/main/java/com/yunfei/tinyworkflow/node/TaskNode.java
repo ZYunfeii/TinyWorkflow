@@ -20,7 +20,6 @@ public class TaskNode extends WfNode {
     private IWorkflowTask taskCallback;
 
     public void work(WfContext wfContext) {
-        List<Integer> res = Arrays.asList(1,2,3);
-        wfContext.setResult(res);
+        taskCallback.run(this, wfContext);
     }
 }

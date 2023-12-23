@@ -16,3 +16,19 @@
 2023-12-21 10:15:06,834 [main] INFO  TestConfigLoader [TestConfigLoader.java : 13] - start test
 2023-12-21 10:15:30,702 [main] INFO  TestConfigLoader [TestConfigLoader.java : 13] - start test
 2023-12-21 10:55:25,674 [main] ERROR c.y.tinyworkflow.engine.WfEngine [WfEngine.java : 16] - null
+2023-12-23 16:36:43,392 [main] ERROR c.y.t.engine.StatusManager [StatusManager.java : 37] - Can not find nodestart's upstream.
+2023-12-23 16:36:53,185 [main] ERROR c.y.t.engine.StatusManager [StatusManager.java : 37] - Can not find nodestart's upstream.
+2023-12-23 16:37:20,480 [main] ERROR c.y.t.engine.StatusManager [StatusManager.java : 37] - Can not find nodestart's upstream.
+2023-12-23 16:39:26,341 [main] INFO  c.y.t.engine.StatusManager [StatusManager.java : 37] - START NODE is ready.
+2023-12-23 16:41:48,460 [main] INFO  c.y.t.engine.StatusManager [StatusManager.java : 37] - START NODE is ready.
+2023-12-23 16:42:17,588 [main] ERROR c.y.t.engine.StatusManager [StatusManager.java : 72] - can not find trans for end
+2023-12-23 16:42:22,429 [main] INFO  c.y.t.engine.StatusManager [StatusManager.java : 37] - START NODE is ready.
+2023-12-23 16:44:38,960 [main] ERROR c.y.t.engine.StatusManager [StatusManager.java : 72] - can not find trans for end
+2023-12-23 16:48:34,255 [main] INFO  c.y.t.engine.StatusManager [StatusManager.java : 37] - START NODE is ready.
+2023-12-23 16:49:02,655 [main] ERROR c.y.t.engine.StatusManager [StatusManager.java : 72] - can not find trans for end
+2023-12-23 16:50:13,956 [main] INFO  c.y.t.engine.StatusManager [StatusManager.java : 37] - START NODE is ready.
+2023-12-23 16:50:13,959 [main] ERROR c.y.t.engine.StatusManager [StatusManager.java : 72] - can not find trans for end
+2023-12-23 16:50:59,521 [main] INFO  c.y.t.engine.StatusManager [StatusManager.java : 37] - START NODE is ready.
+2023-12-23 16:50:59,524 [main] ERROR c.y.t.engine.StatusManager [StatusManager.java : 72] - can not find trans for end
+2023-12-23 16:51:19,648 [main] INFO  c.y.t.engine.StatusManager [StatusManager.java : 37] - START NODE is ready.
+2023-12-23 16:52:02,372 [main] ERROR c.y.t.engine.StatusManager [StatusManager.java : 72] - can not find trans for end

@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WfEngine implements IWfEngine {
     private IConfigLoader configLoader = new ConfigLoader();
     private Scheduler scheduler;
-    private WfContext<?> ctx;
+    private WfContext ctx = new WfContext();
     @Override
     public void init(String configFilePath) {
         try {
@@ -18,12 +18,14 @@ public class WfEngine implements IWfEngine {
             log.error(e.getMessage());
             throw new RuntimeException(e);
         }
-        StatusManager statusManager = StatusManager.builder().transition(configLoader.getWfTrans()).taskMap(configLoader.getTasksMap()).build();
+
+        StatusManager statusManager = new StatusManager(configLoader.getTasksMap(), configLoader.getWfTrans());
         scheduler = Scheduler.builder().statusManager(statusManager).build();
     }
 
     @Override
     public void run() {
+        scheduler.init();
         scheduler.run(ctx);
     }
 }
