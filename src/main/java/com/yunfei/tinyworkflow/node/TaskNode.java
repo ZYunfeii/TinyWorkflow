@@ -7,8 +7,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
-import java.util.Arrays;
-import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -20,6 +18,7 @@ public class TaskNode extends WfNode {
     private IWorkflowTask taskCallback;
 
     public void work(WfContext wfContext) {
+        this.setNodeStatus(NodeStatus.RUNNING);
         taskCallback.run(this, wfContext);
     }
 }
