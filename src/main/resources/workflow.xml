@@ -9,6 +9,9 @@
         <task-node id="task2">
             <assignee>com.yunfei.tinyworkflow.task.TestTask_2</assignee>
         </task-node>
+        <task-node id="task3">
+            <assignee>com.yunfei.tinyworkflow.task.TestTask_3</assignee>
+        </task-node>
         <end-node id="end" />
     </nodes>
 
@@ -18,5 +21,7 @@
         <transition from="decision" to="task2" on="approve" />
         <transition from="decision" to="end" on="reject" />
         <transition from="task2" to="end" />
+        <transition from="start" to="task3" />
+        <transition from="task3" to="end" />
     </transitions>
 </workflow>

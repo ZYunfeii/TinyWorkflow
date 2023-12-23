@@ -28,4 +28,9 @@ public class WfEngine implements IWfEngine {
         scheduler.init();
         scheduler.run(ctx);
     }
+
+    @Override
+    public Object getNodeResult(String nodeId) {
+        return ctx.getResultByNodeId(nodeId);
+    }
 }

@@ -31,6 +31,10 @@ public class Scheduler {
         if (!statusManager.upStreamAllReady(node)) {
             return;
         }
+        if (node.getNodeType().equals(NodeType.END)) {
+            log.info("work flow run completed!");
+            return;
+        }
         if (node.getNodeType().equals(NodeType.TASK)) {
             ((TaskNode) node).work(ctx);
         }
@@ -39,24 +43,24 @@ public class Scheduler {
         List<TransEndpoint<?>> trans = statusManager.getTrans(node);
         for (TransEndpoint<?> t : trans) {
             if (node.getNodeType().equals(NodeType.DECISION)) {
-                List<WfNode> parentNodes = statusManager.parentNodes(node);
-                if (parentNodes.size() > 1) {
-                    // 判断节点只支持一个父结点
-                    log.error("the size of parent nodes over 1.");
-                    throw new IllegalArgumentException("the size of parent nodes over 1.");
-                }
-                if (parentNodes.size() == 0) {
-                    log.error("the size of parent nodes is 0.");
-                    throw new IllegalArgumentException("the size of parent nodes is 0.");
-                }
-                WfNode wfNode = parentNodes.get(0);
-                Object parentNodeResult = ctx.getResult().get(wfNode.getId());
-                if (!parentNodeResult.equals(t.getCondition())) {
+                if (!checkDecisionNode(node, t, ctx)) {
                     continue;
                 }
             }
             runNode(t.getTo(), ctx);
         }
+    }
+
+    private Boolean checkDecisionNode(WfNode node, TransEndpoint<?> transEndpoint, WfContext ctx) {
+        List<WfNode> parentNodes = statusManager.parentNodes(node);
+        if (parentNodes.size() != 1) {
+            // 判断节点只支持一个父结点
+            log.error("the size of parent nodes doesn't equal to 1.");
+            throw new IllegalArgumentException("the size of parent nodes doesn't equal to 1.");
+        }
+        WfNode wfNode = parentNodes.get(0);
+        Object parentNodeResult = ctx.getResult().get(wfNode.getId());
+        return parentNodeResult.equals(transEndpoint.getCondition());
     }
 
 }

@@ -32,3 +32,12 @@
 2023-12-23 16:50:59,524 [main] ERROR c.y.t.engine.StatusManager [StatusManager.java : 72] - can not find trans for end
 2023-12-23 16:51:19,648 [main] INFO  c.y.t.engine.StatusManager [StatusManager.java : 37] - START NODE is ready.
 2023-12-23 16:52:02,372 [main] ERROR c.y.t.engine.StatusManager [StatusManager.java : 72] - can not find trans for end
+2023-12-23 17:44:31,513 [main] INFO  c.y.t.engine.StatusManager [StatusManager.java : 35] - START NODE is ready.
+2023-12-23 17:44:57,979 [main] INFO  c.y.t.engine.StatusManager [StatusManager.java : 82] - Add one to the completion number of upstream nodes of the end node.
+2023-12-23 20:33:53,570 [main] INFO  c.y.t.engine.StatusManager [StatusManager.java : 35] - START NODE is ready.
+2023-12-23 20:33:53,574 [main] INFO  c.y.t.engine.StatusManager [StatusManager.java : 82] - Add one to the completion number of upstream nodes of the end node.
+2023-12-23 20:42:30,050 [main] INFO  c.y.t.engine.StatusManager [StatusManager.java : 35] - START NODE is ready.
+2023-12-23 20:42:30,056 [main] INFO  c.y.tinyworkflow.task.TestTask_1 [TestTask_1.java : 11] - Task1 run.
+2023-12-23 20:42:30,057 [main] INFO  c.y.tinyworkflow.task.TestTask_2 [TestTask_2.java : 11] - Task1 run.
+2023-12-23 20:42:30,057 [main] INFO  c.y.tinyworkflow.task.TestTask_3 [TestTask_3.java : 11] - Task3 run.
+2023-12-23 20:42:30,058 [main] INFO  c.y.tinyworkflow.engine.Scheduler [Scheduler.java : 35] - work flow run completed!
