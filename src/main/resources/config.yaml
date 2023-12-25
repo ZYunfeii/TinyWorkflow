@@ -1,0 +1,5 @@
+tinyworkflow:
+  thread-pool:
+    core-size: 8
+    max-size: 32
+    keep-alive-time: 10

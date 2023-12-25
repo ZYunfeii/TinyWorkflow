@@ -6,7 +6,7 @@ import com.yunfei.tinyworkflow.node.WfNode;
 import java.util.List;
 import java.util.Map;
 
-public interface IConfigLoader {
+public interface IWorkflowConfigLoader {
     void loadConfig(String fileName) throws Exception;
     Map<String, List<TransEndpoint<?>>> getWfTrans();
     Map<String, WfNode> getTasksMap();

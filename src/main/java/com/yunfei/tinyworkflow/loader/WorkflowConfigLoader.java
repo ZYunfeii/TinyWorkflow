@@ -2,8 +2,6 @@ package com.yunfei.tinyworkflow.loader;
 
 import com.yunfei.tinyworkflow.node.*;
 import com.yunfei.tinyworkflow.task.IWorkflowTask;
-import lombok.Builder;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
@@ -24,12 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class ConfigLoader implements IConfigLoader{
+public class WorkflowConfigLoader implements IWorkflowConfigLoader {
     private Map<String, WfNode> taskMap;
     private Map<String, List<TransEndpoint<?>>> transition;
     @Override
     public void loadConfig(String fileName) throws IOException, SAXException, ParserConfigurationException {
-        InputStream inputStream = ConfigLoader.class.getClassLoader().getResourceAsStream(fileName);
+        InputStream inputStream = WorkflowConfigLoader.class.getClassLoader().getResourceAsStream(fileName);
         if (inputStream == null) {
             log.error("read workflow xml error.");
             throw new FileNotFoundException("read workflow xml error.");
