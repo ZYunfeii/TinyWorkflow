@@ -42,6 +42,11 @@ public class WfEngine implements IWfEngine {
     }
 
     @Override
+    public void stop() {
+        scheduler.stop();
+    }
+
+    @Override
     public Object getNodeResult(String nodeId) {
         return ctx.getResultByNodeId(nodeId);
     }

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Data
 @Slf4j
@@ -15,15 +16,19 @@ import java.util.List;
 public class Scheduler {
     private StatusManager statusManager;
     private WfAsyncCallback<Object> asyncCallback;
+    private AtomicBoolean stopAtomicFlag;
     public void run(WfContext ctx) {
-        WfNode startNode = statusManager.findWfStartNode();
+        WfNode startNode = statusManager.getStartNode();
         WfThreadPool.getInstance().submit(new RunNodeTask(startNode, ctx));
     }
 
     public void init() {
         statusManager.setAllReady();
+        stopAtomicFlag = new AtomicBoolean(false);
     }
-
+    public void stop() {
+        stopAtomicFlag.set(true);
+    }
 
     private class RunNodeTask implements Runnable{
         private final WfNode node;
@@ -40,6 +45,14 @@ public class Scheduler {
         }
     }
     private void runNode(WfNode node, WfContext ctx) {
+        if (stopAtomicFlag.get()) {
+            log.info("The stop condition has been met. Node: {}", node.getId());
+            return;
+        }
+        List<TransEndpoint<?>> trans = statusManager.getTrans(node);
+        if (node.getNodeStatus().equals(NodeStatus.COMPLETED)) {
+            runChildren(trans, node, ctx);
+        }
         if (!statusManager.upStreamCompletedCountAddAndCheckReady(node)) {
             return;
         }
@@ -54,8 +67,10 @@ public class Scheduler {
             ((TaskNode) node).work(ctx);
         }
         node.setNodeStatus(NodeStatus.COMPLETED);
+        runChildren(trans, node, ctx);
+    }
 
-        List<TransEndpoint<?>> trans = statusManager.getTrans(node);
+    private void runChildren(List<TransEndpoint<?>> trans, WfNode node, WfContext ctx) {
         for (TransEndpoint<?> t : trans) {
             if (node.getNodeType().equals(NodeType.DECISION)) {
                 if (!checkDecisionNode(node, t, ctx)) {

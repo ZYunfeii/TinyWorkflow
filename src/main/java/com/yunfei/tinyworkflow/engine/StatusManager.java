@@ -6,12 +6,14 @@ import com.yunfei.tinyworkflow.node.NodeStatus;
 import com.yunfei.tinyworkflow.node.NodeType;
 import com.yunfei.tinyworkflow.node.WfNode;
 import lombok.Builder;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
+@Data
 public class StatusManager {
     private Map<String, WfNode> taskMap;
     private Map<String, List<TransEndpoint<?>>> transition;
@@ -20,6 +22,7 @@ public class StatusManager {
     private Map<String, Integer> upStreamNodeCompletedCount = new HashMap<>(12);
 
     private WfNode endNode;
+    private WfNode startNode;
 
     public StatusManager(Map<String, WfNode> taskMap, Map<String, List<TransEndpoint<?>>> transition) {
         this.taskMap = taskMap;
@@ -37,7 +40,13 @@ public class StatusManager {
         for (WfNode n : taskMap.values()) {
             if (n.getNodeType().equals(NodeType.END)) {
                 endNode = n;
+            } else if (n.getNodeType().equals(NodeType.START)) {
+                startNode = n;
             }
+        }
+        if (endNode == null || startNode == null) {
+            log.error("start node/end node is null!");
+            throw new RuntimeException("start node/end node is null!");
         }
     }
 
@@ -155,23 +164,6 @@ public class StatusManager {
 
     }
 
-    public WfNode findWfStartNode() {
-        WfNode startNode = null;
-        for (WfNode n : taskMap.values()) {
-            if (n.getNodeType().equals(NodeType.START)) {
-                startNode = n;
-            }
-        }
-        if (startNode == null) {
-            log.error("can not find start node for flow");
-            return null;
-        }
-        if (startNode.getNodeStatus().equals(NodeStatus.READY)) {
-            return startNode;
-        }
-        // TODO: recovery
-        return null;
-    }
 
     public Boolean allCompleted() {
         return upStreamNodeCompletedCount.get(endNode.getId()).equals(

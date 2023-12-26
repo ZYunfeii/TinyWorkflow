@@ -7,6 +7,8 @@ public interface IWfEngine {
     void syncRun();
     void asyncRun(WfAsyncCallback<Object> callback);
 
+    void stop();
+
     Object getNodeResult(String nodeId);
 
 }
