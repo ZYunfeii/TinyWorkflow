@@ -5,11 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Data
 @Slf4j
 public class WfContext {
-    private Map<String, Object> result = new HashMap<>(12);
+    private Map<String, Object> result = new ConcurrentHashMap<>(12);
     public void clearWfContextInfo() {
         result.clear();
     }

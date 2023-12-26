@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TestTask_2 implements IWorkflowTask{
     @Override
     public void run(WfNode wfNode, WfContext ctx) {
-        log.info("Task1 run.");
+        log.info("Task2 run.");
         ctx.getResult().put(wfNode.getId(), 2);
     }
 }

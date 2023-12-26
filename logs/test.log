@@ -49,3 +49,68 @@
 2023-12-25 17:30:57,474 [main] ERROR c.y.t.loader.EngineConfigLoader [EngineConfigLoader.java : 49] - file: config.xml not found.
 2023-12-25 17:31:32,951 [main] ERROR c.y.t.loader.EngineConfigLoader [EngineConfigLoader.java : 26] - Can not find file: config.xml
 2023-12-25 17:31:32,956 [main] ERROR c.y.t.loader.EngineConfigLoader [EngineConfigLoader.java : 49] - file: config.xml not found.
+2023-12-25 19:02:24,814 [main] INFO  TestConfigLoader [TestConfigLoader.java : 12] - start test
+2023-12-25 19:02:24,913 [main] INFO  c.y.t.engine.StatusManager [StatusManager.java : 35] - START NODE is ready.
+2023-12-25 19:02:24,913 [main] INFO  c.y.tinyworkflow.task.TestTask_1 [TestTask_1.java : 11] - Task1 run.
+2023-12-25 19:02:24,913 [main] INFO  c.y.tinyworkflow.task.TestTask_2 [TestTask_2.java : 11] - Task1 run.
+2023-12-25 19:02:24,913 [main] INFO  c.y.tinyworkflow.task.TestTask_3 [TestTask_3.java : 11] - Task3 run.
+2023-12-25 19:02:24,913 [main] INFO  c.y.tinyworkflow.engine.Scheduler [Scheduler.java : 35] - work flow run completed!
+2023-12-25 19:11:59,650 [main] INFO  TestConfigLoader [TestConfigLoader.java : 12] - start test
+2023-12-25 19:11:59,751 [main] INFO  c.y.t.engine.StatusManager [StatusManager.java : 35] - START NODE is ready.
+2023-12-25 19:11:59,751 [main] INFO  c.y.tinyworkflow.task.TestTask_1 [TestTask_1.java : 11] - Task1 run.
+2023-12-25 19:11:59,751 [main] INFO  c.y.tinyworkflow.task.TestTask_2 [TestTask_2.java : 11] - Task1 run.
+2023-12-25 19:11:59,751 [main] INFO  c.y.tinyworkflow.task.TestTask_3 [TestTask_3.java : 11] - Task3 run.
+2023-12-25 19:11:59,751 [main] INFO  c.y.tinyworkflow.engine.Scheduler [Scheduler.java : 35] - work flow run completed!
+2023-12-25 19:12:47,506 [main] INFO  TestConfigLoader [TestConfigLoader.java : 12] - start test
+2023-12-25 19:12:47,604 [main] INFO  c.y.t.engine.StatusManager [StatusManager.java : 35] - START NODE is ready.
+2023-12-25 19:12:47,604 [main] INFO  c.y.tinyworkflow.task.TestTask_1 [TestTask_1.java : 11] - Task1 run.
+2023-12-25 19:12:47,604 [main] INFO  c.y.tinyworkflow.task.TestTask_2 [TestTask_2.java : 11] - Task1 run.
+2023-12-25 19:12:47,605 [main] INFO  c.y.tinyworkflow.task.TestTask_3 [TestTask_3.java : 11] - Task3 run.
+2023-12-25 19:12:47,605 [main] INFO  c.y.tinyworkflow.engine.Scheduler [Scheduler.java : 35] - work flow run completed!
+2023-12-25 19:13:20,119 [main] INFO  TestConfigLoader [TestConfigLoader.java : 12] - start test
+2023-12-25 19:13:20,213 [main] INFO  c.y.t.engine.StatusManager [StatusManager.java : 35] - START NODE is ready.
+2023-12-25 19:13:20,214 [main] INFO  c.y.tinyworkflow.task.TestTask_1 [TestTask_1.java : 11] - Task1 run.
+2023-12-25 19:13:20,214 [main] INFO  c.y.tinyworkflow.task.TestTask_2 [TestTask_2.java : 11] - Task1 run.
+2023-12-25 19:13:20,214 [main] INFO  c.y.tinyworkflow.task.TestTask_3 [TestTask_3.java : 11] - Task3 run.
+2023-12-25 19:13:20,214 [main] INFO  c.y.tinyworkflow.engine.Scheduler [Scheduler.java : 35] - work flow run completed!
+2023-12-26 10:03:18,893 [pool-1-thread-1] INFO  c.y.t.engine.StatusManager [StatusManager.java : 51] - START NODE is ready.
+2023-12-26 10:04:35,606 [pool-1-thread-1] INFO  c.y.t.engine.StatusManager [StatusManager.java : 51] - START NODE is ready.
+2023-12-26 10:04:35,610 [pool-1-thread-2] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:task1's upstream all completed.
+2023-12-26 10:04:35,610 [pool-1-thread-3] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:task3's upstream all completed.
+2023-12-26 10:04:35,611 [pool-1-thread-2] INFO  c.y.tinyworkflow.task.TestTask_1 [TestTask_1.java : 11] - Task1 run.
+2023-12-26 10:04:35,611 [pool-1-thread-3] INFO  c.y.tinyworkflow.task.TestTask_3 [TestTask_3.java : 11] - Task3 run.
+2023-12-26 10:04:35,612 [pool-1-thread-4] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:decision's upstream all completed.
+2023-12-26 10:04:35,612 [pool-1-thread-6] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:task2's upstream all completed.
+2023-12-26 10:04:35,612 [pool-1-thread-6] INFO  c.y.tinyworkflow.task.TestTask_2 [TestTask_2.java : 11] - Task1 run.
+2023-12-26 10:15:26,502 [pool-1-thread-1] INFO  c.y.t.engine.StatusManager [StatusManager.java : 51] - START NODE is ready.
+2023-12-26 10:15:26,507 [pool-1-thread-3] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:task3's upstream all completed.
+2023-12-26 10:15:26,507 [pool-1-thread-2] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:task1's upstream all completed.
+2023-12-26 10:15:26,508 [pool-1-thread-3] INFO  c.y.tinyworkflow.task.TestTask_3 [TestTask_3.java : 11] - Task3 run.
+2023-12-26 10:15:26,508 [pool-1-thread-2] INFO  c.y.tinyworkflow.task.TestTask_1 [TestTask_1.java : 11] - Task1 run.
+2023-12-26 10:15:26,509 [pool-1-thread-5] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:decision's upstream all completed.
+2023-12-26 10:15:26,509 [pool-1-thread-6] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:task2's upstream all completed.
+2023-12-26 10:15:26,510 [pool-1-thread-6] INFO  c.y.tinyworkflow.task.TestTask_2 [TestTask_2.java : 11] - Task1 run.
+2023-12-26 10:17:56,252 [pool-1-thread-1] INFO  c.y.t.engine.StatusManager [StatusManager.java : 51] - START NODE is ready.
+2023-12-26 10:17:56,255 [pool-1-thread-2] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:task1's upstream all completed.
+2023-12-26 10:17:56,255 [pool-1-thread-3] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:task3's upstream all completed.
+2023-12-26 10:17:56,256 [pool-1-thread-3] INFO  c.y.tinyworkflow.task.TestTask_3 [TestTask_3.java : 11] - Task3 run.
+2023-12-26 10:17:56,256 [pool-1-thread-2] INFO  c.y.tinyworkflow.task.TestTask_1 [TestTask_1.java : 11] - Task1 run.
+2023-12-26 10:17:56,257 [pool-1-thread-5] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:decision's upstream all completed.
+2023-12-26 10:17:56,257 [pool-1-thread-6] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:task2's upstream all completed.
+2023-12-26 10:17:56,257 [pool-1-thread-6] INFO  c.y.tinyworkflow.task.TestTask_2 [TestTask_2.java : 11] - Task1 run.
+2023-12-26 10:18:20,148 [pool-1-thread-1] INFO  c.y.t.engine.StatusManager [StatusManager.java : 51] - START NODE is ready.
+2023-12-26 10:18:20,151 [pool-1-thread-2] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:task1's upstream all completed.
+2023-12-26 10:18:20,151 [pool-1-thread-3] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:task3's upstream all completed.
+2023-12-26 10:18:20,152 [pool-1-thread-2] INFO  c.y.tinyworkflow.task.TestTask_1 [TestTask_1.java : 11] - Task1 run.
+2023-12-26 10:18:20,152 [pool-1-thread-3] INFO  c.y.tinyworkflow.task.TestTask_3 [TestTask_3.java : 11] - Task3 run.
+2023-12-26 10:18:20,153 [pool-1-thread-4] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:decision's upstream all completed.
+2023-12-26 10:18:20,153 [pool-1-thread-6] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:task2's upstream all completed.
+2023-12-26 10:18:20,153 [pool-1-thread-6] INFO  c.y.tinyworkflow.task.TestTask_2 [TestTask_2.java : 11] - Task2 run.
+2023-12-26 10:18:38,856 [pool-1-thread-1] INFO  c.y.t.engine.StatusManager [StatusManager.java : 51] - START NODE is ready.
+2023-12-26 10:18:38,859 [pool-1-thread-2] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:task1's upstream all completed.
+2023-12-26 10:18:38,859 [pool-1-thread-3] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:task3's upstream all completed.
+2023-12-26 10:18:38,862 [pool-1-thread-3] INFO  c.y.tinyworkflow.task.TestTask_3 [TestTask_3.java : 11] - Task3 run.
+2023-12-26 10:18:38,862 [pool-1-thread-2] INFO  c.y.tinyworkflow.task.TestTask_1 [TestTask_1.java : 11] - Task1 run.
+2023-12-26 10:18:38,862 [pool-1-thread-5] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:decision's upstream all completed.
+2023-12-26 10:18:38,862 [pool-1-thread-6] INFO  c.y.t.engine.StatusManager [StatusManager.java : 56] - node:task2's upstream all completed.
+2023-12-26 10:18:38,862 [pool-1-thread-6] INFO  c.y.tinyworkflow.task.TestTask_2 [TestTask_2.java : 11] - Task2 run.

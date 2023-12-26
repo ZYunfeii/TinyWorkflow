@@ -4,7 +4,8 @@ import com.yunfei.tinyworkflow.node.WfNode;
 
 public interface IWfEngine {
     void init(String configFilePath);
-    void run();
+    void syncRun();
+    void asyncRun();
 
     Object getNodeResult(String nodeId);
 

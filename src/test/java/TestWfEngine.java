@@ -8,8 +8,8 @@ public class TestWfEngine {
     @Test
     public void testRun() {
         wfEngine.init("workflow.xml");
-        wfEngine.run();
-        Object task1 = wfEngine.getNodeResult("task1");
-        Assert.assertEquals(task1, "approve");
+        wfEngine.syncRun();
+        Object task2 = wfEngine.getNodeResult("task2");
+        Assert.assertEquals(task2, 2);
     }
 }

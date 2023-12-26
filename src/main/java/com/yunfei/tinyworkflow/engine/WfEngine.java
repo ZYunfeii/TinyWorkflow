@@ -25,11 +25,18 @@ public class WfEngine implements IWfEngine {
                 wfThreadPoolConfig.getKeepAliveTime());
         StatusManager statusManager = new StatusManager(workflowConfigLoader.getTasksMap(), workflowConfigLoader.getWfTrans());
         scheduler = Scheduler.builder().statusManager(statusManager).build();
+        scheduler.init();
     }
 
     @Override
-    public void run() {
-        scheduler.init();
+    public void syncRun() {
+        scheduler.run(ctx);
+        // FIXME: it is not elegant.
+        while (!scheduler.allCompleted()) {}
+    }
+
+    @Override
+    public void asyncRun() {
         scheduler.run(ctx);
     }
 

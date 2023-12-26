@@ -8,12 +8,15 @@ import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class StatusManager {
     private Map<String, WfNode> taskMap;
     private Map<String, List<TransEndpoint<?>>> transition;
     private Map<String, List<WfNode>> upStreamTaskMap = new HashMap<>(6);
+
+    private Map<String, Integer> upStreamNodeCompletedCount = new HashMap<>(12);
 
     public StatusManager(Map<String, WfNode> taskMap, Map<String, List<TransEndpoint<?>>> transition) {
         this.taskMap = taskMap;
@@ -30,24 +33,32 @@ public class StatusManager {
         }
     }
 
-    public Boolean upStreamAllReady(WfNode node) {
+    private Integer upStreamNodeCompletedCountAdd(WfNode node) {
+        if (node.getNodeType().equals(NodeType.START)) {
+            return 0;
+        }
+        synchronized (this) {
+            if (!upStreamNodeCompletedCount.containsKey(node.getId())) {
+                upStreamNodeCompletedCount.put(node.getId(), 1);
+                return 1;
+            }
+            upStreamNodeCompletedCount.put(node.getId(), upStreamNodeCompletedCount.get(node.getId()) + 1);
+            return upStreamNodeCompletedCount.get(node.getId());
+        }
+    }
+    public Boolean upStreamCompletedCountAddAndCheckReady(WfNode node) {
         if (node.getNodeType().equals(NodeType.START)) {
             log.info("START NODE is ready.");
             return true;
         }
-        if (!upStreamTaskMap.containsKey(node.getId())) {
-            log.error("Can not find node{}'s upstream.", node.getId());
+        Integer completedCount = upStreamNodeCompletedCountAdd(node);
+        if (completedCount.equals(upStreamTaskMap.get(node.getId()).size())) {
+            log.info("node:{}'s upstream all completed.", node.getId());
+            return true;
+        } else {
             return false;
         }
-        List<WfNode> upStreams = upStreamTaskMap.get(node.getId());
-        boolean res = true;
-        for (WfNode upStream : upStreams) {
-            if (upStream.getNodeType().equals(NodeType.DECISION)) {
-                continue;
-            }
-            res &= upStream.getNodeStatus().equals(NodeStatus.COMPLETED);
-        }
-        return res;
+
     }
 
     public List<WfNode> parentNodes(WfNode wfNode) {
@@ -106,5 +117,29 @@ public class StatusManager {
         }
         // TODO: recovery
         return null;
+    }
+
+    public Boolean allCompleted() {
+        WfNode endNode = null;
+        for (WfNode n : taskMap.values()) {
+            if (n.getNodeType().equals(NodeType.END)) {
+                endNode = n;
+            }
+        }
+        if (endNode == null) {
+            log.error("Can not find end node.");
+            throw new RuntimeException("Can not find end node.");
+        }
+        if (!upStreamNodeCompletedCount.containsKey(endNode.getId())) {
+            return false;
+        }
+        Integer count = 0;
+        for (WfNode wfNode : upStreamTaskMap.get(endNode.getId())) {
+            if (wfNode.getNodeType().equals(NodeType.DECISION)) {
+                continue;
+            }
+            count++;
+        }
+        return upStreamNodeCompletedCount.get(endNode.getId()).equals(count);
     }
 }

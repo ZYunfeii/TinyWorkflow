@@ -2,6 +2,7 @@ package com.yunfei.tinyworkflow.engine;
 
 import com.yunfei.tinyworkflow.loader.TransEndpoint;
 import com.yunfei.tinyworkflow.node.*;
+import com.yunfei.tinyworkflow.threadpool.WfThreadPool;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -15,20 +16,30 @@ public class Scheduler {
     private StatusManager statusManager;
     public void run(WfContext ctx) {
         WfNode startNode = statusManager.findWfStartNode();
-        runNode(startNode, ctx);
+        WfThreadPool.getInstance().submit(new RunNodeTask(startNode, ctx));
     }
 
     public void init() {
         statusManager.setAllReady();
     }
 
-    /**
-     * 递归方式执行小规模workflow
-     * @param node
-     * @param ctx
-     */
+
+    private class RunNodeTask implements Runnable{
+        private final WfNode node;
+        private final WfContext ctx;
+
+        RunNodeTask(WfNode node, WfContext ctx) {
+            this.node = node;
+            this.ctx = ctx;
+        }
+
+        @Override
+        public void run() {
+            runNode(node, ctx);
+        }
+    }
     public void runNode(WfNode node, WfContext ctx) {
-        if (!statusManager.upStreamAllReady(node)) {
+        if (!statusManager.upStreamCompletedCountAddAndCheckReady(node)) {
             return;
         }
         if (node.getNodeType().equals(NodeType.END)) {
@@ -47,7 +58,7 @@ public class Scheduler {
                     continue;
                 }
             }
-            runNode(t.getTo(), ctx);
+            WfThreadPool.getInstance().submit(new RunNodeTask(t.getTo(), ctx));
         }
     }
 
@@ -61,6 +72,10 @@ public class Scheduler {
         WfNode wfNode = parentNodes.get(0);
         Object parentNodeResult = ctx.getResult().get(wfNode.getId());
         return parentNodeResult.equals(transEndpoint.getCondition());
+    }
+
+    public Boolean allCompleted() {
+        return statusManager.allCompleted();
     }
 
 }
