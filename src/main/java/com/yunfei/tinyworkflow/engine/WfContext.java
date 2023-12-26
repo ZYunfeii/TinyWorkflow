@@ -2,7 +2,9 @@ package com.yunfei.tinyworkflow.engine;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SerializationUtils;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,5 +22,9 @@ public class WfContext {
             return null;
         }
         return result.get(nodeId);
+    }
+    public WfAsyncCallbackResult getCallbackResult() {
+        Map<String, Object> clone = (Map<String, Object>) SerializationUtils.clone((Serializable)result);
+        return WfAsyncCallbackResult.builder().result(clone).build();
     }
 }

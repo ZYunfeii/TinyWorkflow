@@ -11,4 +11,5 @@ public class EndNode extends WfNode{
     {
         nodeType = NodeType.END;
     }
+    private Integer completedOffset;
 }

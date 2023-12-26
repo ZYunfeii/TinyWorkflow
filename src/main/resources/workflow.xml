@@ -4,24 +4,29 @@
         <task-node id="task1">
             <assignee>com.yunfei.tinyworkflow.task.TestTask_1</assignee>
         </task-node>
-        <decision-node id="decision">
-        </decision-node>
+        <decision-node id="decision1"/>
+        <decision-node id="decision2"/>
         <task-node id="task2">
             <assignee>com.yunfei.tinyworkflow.task.TestTask_2</assignee>
         </task-node>
         <task-node id="task3">
             <assignee>com.yunfei.tinyworkflow.task.TestTask_3</assignee>
         </task-node>
+        <task-node id="task4">
+            <assignee>com.yunfei.tinyworkflow.task.TestTask_4</assignee>
+        </task-node>
         <end-node id="end" />
     </nodes>
 
     <transitions>
         <transition from="start" to="task1" />
-        <transition from="task1" to="decision" />
-        <transition from="decision" to="task2" on="approve" />
-        <transition from="decision" to="end" on="reject" />
+        <transition from="task1" to="decision1" />
+        <transition from="decision1" to="task2" on="approve" />
+        <transition from="decision1" to="end" on="reject" />
         <transition from="task2" to="end" />
         <transition from="start" to="task3" />
-        <transition from="task3" to="end" />
+        <transition from="task3" to="decision2" />
+        <transition from="decision2" to="end" on="bad" />
+        <transition from="decision2" to="task4" on="good" />
     </transitions>
 </workflow>

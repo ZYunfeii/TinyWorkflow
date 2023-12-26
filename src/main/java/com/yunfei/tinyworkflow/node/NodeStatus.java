@@ -1,5 +1,5 @@
 package com.yunfei.tinyworkflow.node;
 
 public enum NodeStatus {
-    READY, FAIL, RUNNING, COMPLETED
+    READY, FAIL, RUNNING, COMPLETED, UNREACHABLE
 }

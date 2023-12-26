@@ -1,6 +1,7 @@
 package com.yunfei.tinyworkflow.engine;
 
 import com.yunfei.tinyworkflow.loader.TransEndpoint;
+import com.yunfei.tinyworkflow.node.EndNode;
 import com.yunfei.tinyworkflow.node.NodeStatus;
 import com.yunfei.tinyworkflow.node.NodeType;
 import com.yunfei.tinyworkflow.node.WfNode;
@@ -18,6 +19,8 @@ public class StatusManager {
 
     private Map<String, Integer> upStreamNodeCompletedCount = new HashMap<>(12);
 
+    private WfNode endNode;
+
     public StatusManager(Map<String, WfNode> taskMap, Map<String, List<TransEndpoint<?>>> transition) {
         this.taskMap = taskMap;
         this.transition = transition;
@@ -29,6 +32,11 @@ public class StatusManager {
                     upStreamTaskMap.put(transEndpoint.getTo().getId(), new ArrayList<>());
                 }
                 upStreamTaskMap.get(transEndpoint.getTo().getId()).add(taskMap.get(from));
+            }
+        }
+        for (WfNode n : taskMap.values()) {
+            if (n.getNodeType().equals(NodeType.END)) {
+                endNode = n;
             }
         }
     }
@@ -51,15 +59,61 @@ public class StatusManager {
             log.info("START NODE is ready.");
             return true;
         }
-        Integer completedCount = upStreamNodeCompletedCountAdd(node);
-        if (completedCount.equals(upStreamTaskMap.get(node.getId()).size())) {
+        if (upStreamNodeCompletedCountAdd(node).equals(upStreamShouldBeCompletedCount(node))) {
             log.info("node:{}'s upstream all completed.", node.getId());
             return true;
         } else {
             return false;
         }
+    }
+
+    public void setAllChildNodesUnreachable(WfNode node) {
+        if (node.getNodeType().equals(NodeType.END)) {
+            EndNode endNode = (EndNode) (node);
+            endNode.setCompletedOffset(endNode.getCompletedOffset() - 1);
+            return;
+        }
+        Queue<WfNode> queue = new LinkedList<>();
+        queue.add(node);
+        while (!queue.isEmpty()) {
+            int sz = queue.size();
+            for (int i = 0; i < sz; ++i) {
+                WfNode n = queue.poll();
+                if (n == null) {
+                    log.error("when set child nodes unreachable: NPE!");
+                    throw new RuntimeException("NPE");
+                }
+                n.setNodeStatus(NodeStatus.UNREACHABLE);
+                List<TransEndpoint<?>> endpoints = transition.get(n.getId());
+                for (TransEndpoint<?> endpoint : endpoints) {
+                    if (endpoint.getTo().getNodeType().equals(NodeType.END)) {
+                        continue;
+                    }
+                    queue.add(endpoint.getTo());
+                }
+            }
+        }
+    }
+
+    private Integer upStreamShouldBeCompletedCount(WfNode node) {
+        if (node.getNodeType().equals(NodeType.START)) {
+            return 0;
+        }
+        List<WfNode> wfNodes = upStreamTaskMap.get(node.getId());
+        Integer count = 0;
+        for (WfNode wfNode : wfNodes) {
+            if (!wfNode.getNodeStatus().equals(NodeStatus.UNREACHABLE)) {
+                count++;
+            }
+        }
+        if (node.getNodeType().equals(NodeType.END)) {
+            EndNode endNode = (EndNode) node;
+            count += endNode.getCompletedOffset();
+        }
+        return count;
 
     }
+
 
     public List<WfNode> parentNodes(WfNode wfNode) {
         if (!upStreamTaskMap.containsKey(wfNode.getId())) {
@@ -120,26 +174,10 @@ public class StatusManager {
     }
 
     public Boolean allCompleted() {
-        WfNode endNode = null;
-        for (WfNode n : taskMap.values()) {
-            if (n.getNodeType().equals(NodeType.END)) {
-                endNode = n;
-            }
-        }
-        if (endNode == null) {
-            log.error("Can not find end node.");
-            throw new RuntimeException("Can not find end node.");
-        }
-        if (!upStreamNodeCompletedCount.containsKey(endNode.getId())) {
-            return false;
-        }
-        Integer count = 0;
-        for (WfNode wfNode : upStreamTaskMap.get(endNode.getId())) {
-            if (wfNode.getNodeType().equals(NodeType.DECISION)) {
-                continue;
-            }
-            count++;
-        }
-        return upStreamNodeCompletedCount.get(endNode.getId()).equals(count);
+        return upStreamNodeCompletedCount.get(endNode.getId()).equals(
+                upStreamShouldBeCompletedCount(endNode)
+        );
     }
+
+
 }

@@ -183,7 +183,7 @@ public class WorkflowConfigLoader implements IWorkflowConfigLoader {
 
     private WfNode getEndNode(Element element) {
         String id = element.getAttribute("id");
-        return EndNode.builder().id(id).build();
+        return EndNode.builder().id(id).completedOffset(0).build();
     }
 
     private WfNode getTaskNode(Element element) {

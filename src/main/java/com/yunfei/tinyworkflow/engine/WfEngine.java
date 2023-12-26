@@ -36,7 +36,8 @@ public class WfEngine implements IWfEngine {
     }
 
     @Override
-    public void asyncRun() {
+    public void asyncRun(WfAsyncCallback<Object> callback) {
+        scheduler.setAsyncCallback(callback);
         scheduler.run(ctx);
     }
 

@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 public class Scheduler {
     private StatusManager statusManager;
+    private WfAsyncCallback<Object> asyncCallback;
     public void run(WfContext ctx) {
         WfNode startNode = statusManager.findWfStartNode();
         WfThreadPool.getInstance().submit(new RunNodeTask(startNode, ctx));
@@ -38,12 +39,15 @@ public class Scheduler {
             runNode(node, ctx);
         }
     }
-    public void runNode(WfNode node, WfContext ctx) {
+    private void runNode(WfNode node, WfContext ctx) {
         if (!statusManager.upStreamCompletedCountAddAndCheckReady(node)) {
             return;
         }
         if (node.getNodeType().equals(NodeType.END)) {
             log.info("work flow run completed!");
+            if (asyncCallback != null) {
+                asyncCallback.onComplete(ctx.getCallbackResult());
+            }
             return;
         }
         if (node.getNodeType().equals(NodeType.TASK)) {
@@ -55,6 +59,7 @@ public class Scheduler {
         for (TransEndpoint<?> t : trans) {
             if (node.getNodeType().equals(NodeType.DECISION)) {
                 if (!checkDecisionNode(node, t, ctx)) {
+                    statusManager.setAllChildNodesUnreachable(t.getTo());
                     continue;
                 }
             }
