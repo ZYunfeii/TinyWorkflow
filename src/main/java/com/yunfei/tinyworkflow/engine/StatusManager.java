@@ -24,6 +24,15 @@ public class StatusManager {
     private WfNode endNode;
     private WfNode startNode;
 
+    public void init() {
+        upStreamNodeCompletedCount.clear();
+        initNode();
+    }
+
+    public void initEndNode() {
+        ((EndNode) endNode).setCompletedOffset(0);
+    }
+
     public StatusManager(Map<String, WfNode> taskMap, Map<String, List<TransEndpoint<?>>> transition) {
         this.taskMap = taskMap;
         this.transition = transition;
@@ -57,9 +66,11 @@ public class StatusManager {
         synchronized (this) {
             if (!upStreamNodeCompletedCount.containsKey(node.getId())) {
                 upStreamNodeCompletedCount.put(node.getId(), 1);
+                log.info("{}'s upstream node completed count update to {}", node.getId(), upStreamNodeCompletedCount.get(node.getId()));
                 return 1;
             }
             upStreamNodeCompletedCount.put(node.getId(), upStreamNodeCompletedCount.get(node.getId()) + 1);
+            log.info("{}'s upstream node completed count update to {}", node.getId(), upStreamNodeCompletedCount.get(node.getId()));
             return upStreamNodeCompletedCount.get(node.getId());
         }
     }
@@ -68,8 +79,9 @@ public class StatusManager {
             log.info("START NODE is ready.");
             return true;
         }
-        if (upStreamNodeCompletedCountAdd(node).equals(upStreamShouldBeCompletedCount(node))) {
-            log.info("node:{}'s upstream all completed.", node.getId());
+        Integer shouldBeCompletedCount = upStreamShouldBeCompletedCount(node);
+        if (upStreamNodeCompletedCountAdd(node).equals(shouldBeCompletedCount)) {
+            log.info("node:{}'s upstream all completed. Count: {}.", node.getId(), shouldBeCompletedCount);
             return true;
         } else {
             return false;
@@ -145,15 +157,14 @@ public class StatusManager {
         return taskMap.get(id).getNodeStatus();
     }
 
-    public void setAllReady() {
+    private void initNode() {
         taskMap.forEach((k, v)->{
-            v.setNodeStatus(NodeStatus.READY);
+            v.init();
         });
     }
 
     public List<TransEndpoint<?>> getTrans(WfNode wfNode) {
         if (wfNode.getNodeType().equals(NodeType.END)) {
-            log.info("Add one to the completion number of upstream nodes of the end node.");
             return Collections.emptyList();
         }
         if (!transition.containsKey(wfNode.getId())) {
@@ -166,6 +177,9 @@ public class StatusManager {
 
 
     public Boolean allCompleted() {
+        if (upStreamNodeCompletedCount.get(endNode.getId()) == null) {
+            return false;
+        }
         return upStreamNodeCompletedCount.get(endNode.getId()).equals(
                 upStreamShouldBeCompletedCount(endNode)
         );

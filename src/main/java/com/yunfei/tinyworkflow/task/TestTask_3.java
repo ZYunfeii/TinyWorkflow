@@ -9,6 +9,12 @@ public class TestTask_3 implements IWorkflowTask{
     @Override
     public void run(WfNode node, WfContext ctx) {
         log.info("Task3 run.");
-        ctx.getResult().put(node.getId(), "bad");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        ctx.getResult().put(node.getId(), "good");
+        log.info("Task3 completed.");
     }
 }

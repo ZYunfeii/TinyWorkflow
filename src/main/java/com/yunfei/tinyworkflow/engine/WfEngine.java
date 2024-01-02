@@ -1,7 +1,7 @@
 package com.yunfei.tinyworkflow.engine;
 
 import com.yunfei.tinyworkflow.loader.*;
-import com.yunfei.tinyworkflow.threadpool.WfThreadPool;
+import com.yunfei.tinyworkflow.threadpool.WfThreadPoolFactory;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -12,7 +12,7 @@ public class WfEngine implements IWfEngine {
     private Scheduler scheduler;
     private WfContext ctx = new WfContext();
     @Override
-    public void init(String workflowConfigFilePath) {
+    public void initWithWorkflowConfigFile(String workflowConfigFilePath) {
         try {
             workflowConfigLoader.loadConfig(workflowConfigFilePath);
             engineConfigLoader.loadConfig(engineConfigFileName);
@@ -21,11 +21,17 @@ public class WfEngine implements IWfEngine {
             throw new RuntimeException(e);
         }
         WfThreadPoolConfig wfThreadPoolConfig = engineConfigLoader.getWfThreadPoolConfig();
-        WfThreadPool.setWfThreadPoolConfigPara(wfThreadPoolConfig.getCoreSize(), wfThreadPoolConfig.getMaxSize(),
+        WfThreadPoolFactory.setWfThreadPoolConfigPara(wfThreadPoolConfig.getCoreSize(), wfThreadPoolConfig.getMaxSize(),
                 wfThreadPoolConfig.getKeepAliveTime());
         StatusManager statusManager = new StatusManager(workflowConfigLoader.getTasksMap(), workflowConfigLoader.getWfTrans());
         scheduler = Scheduler.builder().statusManager(statusManager).build();
+        init();
+    }
+
+    @Override
+    public void init() {
         scheduler.init();
+        ctx.clearWfContextInfo();
     }
 
     @Override

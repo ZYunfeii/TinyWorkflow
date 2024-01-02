@@ -12,4 +12,10 @@ public class EndNode extends WfNode{
         nodeType = NodeType.END;
     }
     private Integer completedOffset;
+
+    @Override
+    public synchronized void init() {
+        super.init();
+        completedOffset = 0;
+    }
 }

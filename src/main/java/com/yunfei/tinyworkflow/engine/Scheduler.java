@@ -2,7 +2,7 @@ package com.yunfei.tinyworkflow.engine;
 
 import com.yunfei.tinyworkflow.loader.TransEndpoint;
 import com.yunfei.tinyworkflow.node.*;
-import com.yunfei.tinyworkflow.threadpool.WfThreadPool;
+import com.yunfei.tinyworkflow.threadpool.WfThreadPoolFactory;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -18,16 +18,24 @@ public class Scheduler {
     private WfAsyncCallback<Object> asyncCallback;
     private AtomicBoolean stopAtomicFlag;
     public void run(WfContext ctx) {
+        if (stopAtomicFlag.get()) {
+            stopAtomicFlag.set(false);
+        }
+        statusManager.initEndNode();
         WfNode startNode = statusManager.getStartNode();
-        WfThreadPool.getInstance().submit(new RunNodeTask(startNode, ctx));
+        WfThreadPoolFactory.getInstance().submit(new RunNodeTask(startNode, ctx));
     }
 
     public void init() {
-        statusManager.setAllReady();
+        statusManager.init();
+        asyncCallback = null;
         stopAtomicFlag = new AtomicBoolean(false);
     }
     public void stop() {
         stopAtomicFlag.set(true);
+        // 等待所有提交的节点停止
+        WfThreadPoolFactory.getInstance().awaitAllTaskInThreadPoolCompleted();
+        log.info("Scheduler stop.");
     }
 
     private class RunNodeTask implements Runnable{
@@ -52,6 +60,7 @@ public class Scheduler {
         List<TransEndpoint<?>> trans = statusManager.getTrans(node);
         if (node.getNodeStatus().equals(NodeStatus.COMPLETED)) {
             runChildren(trans, node, ctx);
+            return;
         }
         if (!statusManager.upStreamCompletedCountAddAndCheckReady(node)) {
             return;
@@ -78,7 +87,7 @@ public class Scheduler {
                     continue;
                 }
             }
-            WfThreadPool.getInstance().submit(new RunNodeTask(t.getTo(), ctx));
+            WfThreadPoolFactory.getInstance().submit(new RunNodeTask(t.getTo(), ctx));
         }
     }
 

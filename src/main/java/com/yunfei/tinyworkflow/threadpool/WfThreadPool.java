@@ -1,47 +1,60 @@
 package com.yunfei.tinyworkflow.threadpool;
 
-import com.yunfei.tinyworkflow.loader.EngineConfigLoader;
-import com.yunfei.tinyworkflow.loader.WfThreadPoolConfig;
-import lombok.Setter;
+import com.yunfei.tinyworkflow.util.AdjustableCountDownLatch;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
-public class WfThreadPool {
-    private static volatile ThreadPoolExecutor wfThreadPool;
+@Slf4j
+public class WfThreadPool extends ThreadPoolExecutor {
+    private AdjustableCountDownLatch adjustableCountDownLatch = new AdjustableCountDownLatch(0);
 
-    private static Integer wfCoreSize;
-    private static Integer wfMaxSize;
-    private static Long wfKeepAliveTime;
-
-    public static void setWfThreadPoolConfigPara(Integer coreSize, Integer maxSize, Long keepAliveTime) {
-        wfCoreSize = coreSize;
-        wfMaxSize = maxSize;
-        wfKeepAliveTime = keepAliveTime;
+    public WfThreadPool(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) {
+        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
     }
 
+    public WfThreadPool(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory) {
+        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory);
+    }
 
-    private WfThreadPool(){}
+    public WfThreadPool(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler) {
+        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, handler);
+    }
 
+    public WfThreadPool(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) {
+        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, handler);
+    }
 
-    public static ThreadPoolExecutor getInstance() {
-        if (wfThreadPool == null) {
-            synchronized (WfThreadPool.class) {
-                if (wfThreadPool == null) {
-                    wfThreadPool = new ThreadPoolExecutor(
-                            wfCoreSize,
-                            wfMaxSize,
-                            wfKeepAliveTime,
-                            TimeUnit.SECONDS,
-                            new LinkedBlockingDeque<>(100000),
-                            Executors.defaultThreadFactory(),
-                            new ThreadPoolExecutor.AbortPolicy()
-                    );
-                }
-            }
+    @Override
+    public Future<?> submit(Runnable task) {
+        adjustableCountDownLatch.increaseCount();
+        return super.submit(task);
+    }
+
+    @Override
+    public <T> Future<T> submit(Runnable task, T result) {
+        adjustableCountDownLatch.increaseCount();
+        return super.submit(task, result);
+    }
+
+    @Override
+    public <T> Future<T> submit(Callable<T> task) {
+        adjustableCountDownLatch.increaseCount();
+        return super.submit(task);
+    }
+
+    @Override
+    protected void afterExecute(Runnable r, Throwable t) {
+        super.afterExecute(r, t);
+        adjustableCountDownLatch.countDown();
+    }
+
+    public void awaitAllTaskInThreadPoolCompleted() {
+        try {
+            adjustableCountDownLatch.await();
+        } catch (InterruptedException e) {
+            log.error("A runtime exception occurs.");
+            throw new RuntimeException(e);
         }
-        return wfThreadPool;
     }
 }

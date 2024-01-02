@@ -28,5 +28,6 @@
         <transition from="task3" to="decision2" />
         <transition from="decision2" to="end" on="bad" />
         <transition from="decision2" to="task4" on="good" />
+        <transition from="task4" to="end" />
     </transitions>
 </workflow>

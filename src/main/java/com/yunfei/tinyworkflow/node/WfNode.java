@@ -19,4 +19,8 @@ public abstract class WfNode {
     public synchronized void setNodeStatus(NodeStatus status) {
         this.nodeStatus = status;
     }
+
+    public synchronized void init() {
+        this.nodeStatus = NodeStatus.READY;
+    }
 }

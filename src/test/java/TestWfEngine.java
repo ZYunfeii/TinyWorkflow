@@ -6,11 +6,48 @@ public class TestWfEngine {
     private IWfEngine wfEngine = new WfEngine();
     @Test
     public void testRun() throws InterruptedException {
-        wfEngine.init("workflow.xml");
+        wfEngine.initWithWorkflowConfigFile("workflow.xml");
         wfEngine.asyncRun((res)->{
             WfAsyncCallbackResult r = (WfAsyncCallbackResult) res;
             System.out.println(r);
         });
         Thread.sleep(200000);
+    }
+
+    @Test
+    public void testStopThenRunAgain() throws InterruptedException {
+        wfEngine.initWithWorkflowConfigFile("workflow.xml");
+        wfEngine.asyncRun((res)->{
+            WfAsyncCallbackResult r = (WfAsyncCallbackResult) res;
+            System.out.println(r);
+        });
+
+        Thread.sleep(2000);
+        wfEngine.stop();
+
+        Thread.sleep(5000);
+        wfEngine.syncRun();
+
+    }
+
+    @Test
+    public void testStopAndInitThenRun() throws InterruptedException {
+        wfEngine.initWithWorkflowConfigFile("workflow.xml");
+        wfEngine.asyncRun((res)->{
+            WfAsyncCallbackResult r = (WfAsyncCallbackResult) res;
+            System.out.println(r);
+        });
+
+        Thread.sleep(2000);
+        wfEngine.stop();
+        wfEngine.init();
+        wfEngine.syncRun();
+    }
+
+    @Test
+    public void testOther() {
+        Integer a;
+        a = 2;
+        System.out.println(a);
     }
 }
