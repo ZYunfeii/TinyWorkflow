@@ -1,5 +1,7 @@
 # TinyWorkflow
 This is a lightweighted workflow engine with java.
+
+Tinyworkflow是一款非常轻量级的简易工作流引擎，核心代码只有千行；利用DAG进行建模，支持并行异步执行；通过XML简易配置。
 # Quick Start
 ## Demo
 ![描述](./figure/workflow-demo.jpg)
