@@ -1,14 +1,14 @@
 package com.yunfei.tinyworkflow.engine;
 
 import com.yunfei.tinyworkflow.loader.TransEndpoint;
-import com.yunfei.tinyworkflow.node.EndNode;
-import com.yunfei.tinyworkflow.node.NodeStatus;
-import com.yunfei.tinyworkflow.node.NodeType;
-import com.yunfei.tinyworkflow.node.WfNode;
+import com.yunfei.tinyworkflow.node.*;
+import com.yunfei.tinyworkflow.task.IWorkflowTask;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -185,5 +185,28 @@ public class StatusManager {
         );
     }
 
+    public WfNode getWfNodeById(String nodeId) {
+        return taskMap.get(nodeId);
+    }
 
+    public void setWfNodeCallbackById(String nodeId, Class<?> cls) {
+        WfNode node = getWfNodeById(nodeId);
+        if (node == null) {
+            log.info("It doesn't exist for node:{}", nodeId);
+            return;
+        }
+        if (!(node instanceof TaskNode)) {
+            log.info("Node:{} is not task node.", nodeId);
+            return;
+        }
+        IWorkflowTask cb;
+        try {
+            Constructor<?> constructor = cls.getDeclaredConstructor();  // 获取无参构造函数
+            cb = (IWorkflowTask) constructor.newInstance();  // 实例化对象
+        } catch (Exception e) {
+            log.error("Can not get new instance for class:{}", cls);
+            throw new RuntimeException(e);
+        }
+        ((TaskNode) node).setTaskCallback(cb);
+    }
 }

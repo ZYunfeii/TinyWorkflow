@@ -198,6 +198,10 @@ public class WorkflowConfigLoader implements IWorkflowConfigLoader {
             throw new IllegalArgumentException("there is no assignee for task node!");
         }
         String taskName = assignee.item(0).getTextContent();
+
+        NodeList maxRetryNodeList = element.getElementsByTagName("max-retry");
+        Integer maxRetries = maxRetryNodeList.getLength() == 0 ? 0 :
+                Integer.parseInt(element.getElementsByTagName("max-retry").item(0).getTextContent());
         IWorkflowTask task;
         try {
             Class<?> clazz = Class.forName(taskName);
@@ -207,7 +211,7 @@ public class WorkflowConfigLoader implements IWorkflowConfigLoader {
             throw new IllegalArgumentException("task find unknown error.");
         }
 
-        return TaskNode.builder().id(id).taskCallback(task).build();
+        return TaskNode.builder().id(id).maxRetries(maxRetries).taskCallback(task).build();
     }
 
     private WfNode getDecisionNode(Element element) {

@@ -1,7 +1,14 @@
 import com.yunfei.tinyworkflow.engine.*;
+import com.yunfei.tinyworkflow.node.WfNode;
+import com.yunfei.tinyworkflow.task.IWorkflowTask;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+@Slf4j
 public class TestWfEngine {
     private IWfEngine wfEngine = new WfEngine();
 //    @Test
@@ -43,6 +50,36 @@ public class TestWfEngine {
         wfEngine.init();
         wfEngine.syncRun();
     }
+    @Slf4j
+    public static class TestTask implements IWorkflowTask {
+        private Integer count = 0;
+        @Override
+        public void run(WfNode node, WfContext ctx) throws Exception {
+            log.info("Test Class run.");
+
+            Thread.sleep(1000);
+            if (count < 3) {
+                count++;
+                throw new RuntimeException("Test runtime exception.");
+            }
+
+            ctx.getResult().put(node.getId(), "approve");
+            log.info("Test Class completed.");
+        }
+    }
+
+    @Test
+    public void testRetry() throws Exception {
+
+//        Constructor<?> constructor = TestTask.class.getDeclaredConstructor();  // 获取无参构造函数
+//
+//        TestTask myInstance = (TestTask) constructor.newInstance();  // 实例化对象
+//        System.out.println(myInstance);
+
+        wfEngine.initWithWorkflowConfigFile("workflow.xml");
+        wfEngine.changeTaskNodeCallback("task1", TestTask.class);
+        wfEngine.syncRun();
+    }
 
     @Test
     public void testOther() {
@@ -53,3 +90,4 @@ public class TestWfEngine {
         System.out.println(a);
     }
 }
+

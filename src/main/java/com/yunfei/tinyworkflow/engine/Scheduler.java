@@ -73,7 +73,24 @@ public class Scheduler {
             return;
         }
         if (node.getNodeType().equals(NodeType.TASK)) {
-            ((TaskNode) node).work(ctx);
+            TaskNode taskNode = (TaskNode) node;
+            Integer maxRetries = taskNode.getMaxRetries();
+            while (taskNode.getCurRetries() < maxRetries + 1) {
+                try {
+                    taskNode.work(ctx);
+                } catch (Exception e) {
+                    if (taskNode.getCurRetries() >= maxRetries) {
+                        log.warn("The maximum number of retries has been reached for node:{}.", taskNode.getId());
+                        log.warn(e.getMessage());
+                        return;
+                    } else {
+                        taskNode.setCurRetries(taskNode.getCurRetries() + 1);
+                        log.info("Begin retry for node:{}. Current retry num:{}", node.getId(), taskNode.getCurRetries());
+                        continue;
+                    }
+                }
+                break;
+            }
         }
         node.setNodeStatus(NodeStatus.COMPLETED);
         runChildren(trans, node, ctx);

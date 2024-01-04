@@ -1,6 +1,8 @@
 package com.yunfei.tinyworkflow.engine;
 
 import com.yunfei.tinyworkflow.loader.*;
+import com.yunfei.tinyworkflow.node.TaskNode;
+import com.yunfei.tinyworkflow.node.WfNode;
 import com.yunfei.tinyworkflow.threadpool.WfThreadPoolFactory;
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,5 +57,10 @@ public class WfEngine implements IWfEngine {
     @Override
     public Object getNodeResult(String nodeId) {
         return ctx.getResultByNodeId(nodeId);
+    }
+
+    @Override
+    public void changeTaskNodeCallback(String taskNodeId, Class<?> cls) {
+        scheduler.getStatusManager().setWfNodeCallbackById(taskNodeId, cls);
     }
 }

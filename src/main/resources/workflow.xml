@@ -3,6 +3,7 @@
         <start-node id="start" />
         <task-node id="task1">
             <assignee>com.yunfei.tinyworkflow.task.TestTask_1</assignee>
+            <max-retry>3</max-retry>
         </task-node>
         <decision-node id="decision1"/>
         <decision-node id="decision2"/>

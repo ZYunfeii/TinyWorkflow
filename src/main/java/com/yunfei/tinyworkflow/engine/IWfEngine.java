@@ -12,4 +12,6 @@ public interface IWfEngine {
 
     Object getNodeResult(String nodeId);
 
+    void changeTaskNodeCallback(String taskNodeId, Class<?> cls);
+
 }

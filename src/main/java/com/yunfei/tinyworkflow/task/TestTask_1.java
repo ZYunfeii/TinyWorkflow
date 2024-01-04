@@ -7,13 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TestTask_1 implements IWorkflowTask{
     @Override
-    public void run(WfNode wfNode, WfContext ctx) {
+    public void run(WfNode wfNode, WfContext ctx) throws InterruptedException {
         log.info("Task1 run.");
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
+        Thread.sleep(1000);
+
         ctx.getResult().put(wfNode.getId(), "approve");
         log.info("Task1 completed.");
     }
