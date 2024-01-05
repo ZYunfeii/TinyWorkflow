@@ -38,6 +38,12 @@ public class TestWfEngine {
     }
 
     @Test
+    public void testSyncRun() {
+        wfEngine.initWithWorkflowConfigFile("workflow.xml");
+        wfEngine.syncRun();
+    }
+
+    @Test
     public void testStopAndInitThenRun() throws InterruptedException {
         wfEngine.initWithWorkflowConfigFile("workflow.xml");
         wfEngine.asyncRun((res)->{

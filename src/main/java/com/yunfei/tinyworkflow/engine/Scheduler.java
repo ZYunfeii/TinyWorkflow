@@ -8,6 +8,9 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Data
@@ -17,6 +20,15 @@ public class Scheduler {
     private StatusManager statusManager;
     private WfAsyncCallback<Object> asyncCallback;
     private AtomicBoolean stopAtomicFlag;
+    private CyclicBarrier barrier;
+    public void awaitUntilAllCompleted() {
+        try {
+            barrier.await();
+        } catch (InterruptedException | BrokenBarrierException e) {
+            log.error("barrier await error.");
+            throw new RuntimeException(e);
+        }
+    }
     public void run(WfContext ctx) {
         if (stopAtomicFlag.get()) {
             stopAtomicFlag.set(false);
@@ -69,6 +81,12 @@ public class Scheduler {
             log.info("work flow run completed!");
             if (asyncCallback != null) {
                 asyncCallback.onComplete(ctx.getCallbackResult());
+            }
+            try {
+                barrier.await();
+            } catch (InterruptedException | BrokenBarrierException e) {
+                log.error("barrier await error.");
+                throw new RuntimeException(e);
             }
             return;
         }

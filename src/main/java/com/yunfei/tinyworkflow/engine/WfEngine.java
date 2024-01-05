@@ -6,6 +6,9 @@ import com.yunfei.tinyworkflow.node.WfNode;
 import com.yunfei.tinyworkflow.threadpool.WfThreadPoolFactory;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
+
 @Slf4j
 public class WfEngine implements IWfEngine {
     private final WorkflowConfigLoader workflowConfigLoader = new WorkflowConfigLoader();
@@ -26,7 +29,8 @@ public class WfEngine implements IWfEngine {
         WfThreadPoolFactory.setWfThreadPoolConfigPara(wfThreadPoolConfig.getCoreSize(), wfThreadPoolConfig.getMaxSize(),
                 wfThreadPoolConfig.getKeepAliveTime());
         StatusManager statusManager = new StatusManager(workflowConfigLoader.getTasksMap(), workflowConfigLoader.getWfTrans());
-        scheduler = Scheduler.builder().statusManager(statusManager).build();
+        scheduler = Scheduler.builder().statusManager(statusManager).barrier(new CyclicBarrier(2)).
+                build();
         init();
     }
 
@@ -39,8 +43,7 @@ public class WfEngine implements IWfEngine {
     @Override
     public void syncRun() {
         scheduler.run(ctx);
-        // FIXME: it is not elegant.
-        while (!scheduler.allCompleted()) {}
+        scheduler.awaitUntilAllCompleted();
     }
 
     @Override

@@ -200,7 +200,7 @@ public class WorkflowConfigLoader implements IWorkflowConfigLoader {
         String taskName = assignee.item(0).getTextContent();
 
         NodeList maxRetryNodeList = element.getElementsByTagName("max-retry");
-        Integer maxRetries = maxRetryNodeList.getLength() == 0 ? 0 :
+        Integer maxRetries = maxRetryNodeList.getLength() == 0 ? 1 :
                 Integer.parseInt(element.getElementsByTagName("max-retry").item(0).getTextContent());
         IWorkflowTask task;
         try {
