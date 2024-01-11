@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface IWorkflowConfigLoader {
-    void loadConfig(String fileName) throws Exception;
+    Long loadConfig(String fileName) throws Exception;
     Map<String, List<TransEndpoint<?>>> getWfTrans();
     Map<String, WfNode> getTasksMap();
 }

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunfei.tinyworkflow.dao.TaskDao">
+    <sql id="allColumns">
+        id AS id,
+        gmt_created AS gmtCreated,
+        gmt_modified AS gmtModified,
+        task_name AS taskName,
+        status AS status,
+        workflow_id AS workflowId
+    </sql>
+    <select id="queryAll" resultType="com.yunfei.tinyworkflow.entity.TaskDo">
+        SELECT
+        <include refid="allColumns"></include>
+        FROM
+        `workflow`
+    </select>
+
+    <select id="query" resultType="com.yunfei.tinyworkflow.entity.TaskDo">
+        SELECT
+        <include refid="allColumns"></include>
+        FROM
+        `workflow`
+        <where>
+            <if test="id != null">
+                AND `workflow`.`id` = #{id}
+            </if>
+            <if test="gmtCreated != null">
+                AND `workflow`.`gmt_created` = #{gmtCreated}
+            </if>
+            <if test="gmtModified != null">
+                AND `workflow`.`gmt_modified` = #{gmtModified}
+            </if>
+            <if test="taskName != null">
+                AND `workflow`.`task_name` = #{taskName}
+            </if>
+            <if test="status != null">
+                AND `workflow`.`status` = #{status}
+            </if>
+            <if test="workflowId != null">
+                AND `workflow`.`workflow_id` = #{workflowId}
+            </if>
+            AND
+            `workflow`.`is_deleted` = 0
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.yunfei.tinyworkflow.entity.TaskDo">
+        INSERT INTO `workflow` (`id`,`gmt_created`,`gmt_modified`,`task_name`,`status`,`workflow_id`)
+        VALUES (#{id},now(),now(),#{taskName},#{status},#{workflowId})
+    </insert>
+
+    <update id="update" parameterType="com.yunfei.tinyworkflow.entity.TaskDo">
+        UPDATE `workflow`
+        <set>
+            <if test="id != null">
+                `workflow`.`id` = #{id},
+            </if>
+            <if test="gmtCreated != null">
+                `workflow`.`gmt_created` = #{gmtCreated},
+            </if>
+            <if test="gmtModified != null">
+                `workflow`.`gmt_modified` = #{gmtModified},
+            </if>
+            <if test="taskName != null">
+                `workflow`.`task_name` = #{taskName},
+            </if>
+            <if test="status != null">
+                `workflow`.`status` = #{status},
+            </if>
+            <if test="workflowId != null">
+                `workflow`.`workflow_id` = #{workflowId}
+            </if>
+            `gmt_modified` = now()
+        </set>
+        WHERE
+        `workflow`.`task_id` = #{taskId}
+    </update>
+
+    <update id="delete" parameterType="com.yunfei.tinyworkflow.entity.TaskDo">
+        UPDATE `workflow`
+        SET is_deleted = 1
+        WHERE
+        <choose>
+            <when test="id != null">
+                `workflow`.`id` = #{id}
+            </when>
+            <when test="gmtCreated != null">
+                `workflow`.`gmt_created` = #{gmtCreated}
+            </when>
+            <when test="gmtModified != null">
+                `workflow`.`gmt_modified` = #{gmtModified}
+            </when>
+            <when test="taskName != null">
+                `workflow`.`task_name` = #{taskName}
+            </when>
+            <when test="status != null">
+                `workflow`.`status` = #{status}
+            </when>
+            <when test="workflowId != null">
+                `workflow`.`workflow_id` = #{workflowId}
+            </when>
+        </choose>
+        AND is_deleted = 0
+    </update>
+
+</mapper>

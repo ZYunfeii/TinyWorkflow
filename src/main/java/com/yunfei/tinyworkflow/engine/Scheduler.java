@@ -38,6 +38,10 @@ public class Scheduler {
         WfThreadPoolFactory.getInstance().submit(new RunNodeTask(startNode, ctx));
     }
 
+    public void setNodeStatus(String  id, NodeStatus nodeStatus) {
+        statusManager.setNodeStatus(id, nodeStatus);
+    }
+
     public void init() {
         statusManager.init();
         asyncCallback = null;

@@ -18,8 +18,9 @@ public class WfEngine implements IWfEngine {
     private WfContext ctx = new WfContext();
     @Override
     public void initWithWorkflowConfigFile(String workflowConfigFilePath) {
+        Long workflowId;
         try {
-            workflowConfigLoader.loadConfig(workflowConfigFilePath);
+            workflowId = workflowConfigLoader.loadConfig(workflowConfigFilePath);
             engineConfigLoader.loadConfig(engineConfigFileName);
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -31,7 +32,13 @@ public class WfEngine implements IWfEngine {
         StatusManager statusManager = new StatusManager(workflowConfigLoader.getTasksMap(), workflowConfigLoader.getWfTrans());
         scheduler = Scheduler.builder().statusManager(statusManager).barrier(new CyclicBarrier(2)).
                 build();
+        WfMyBatisPlusConfig wfMyBatisPlusConfig = engineConfigLoader.getWfMyBatisPlusConfig();
+        PersistenceManager.init(wfMyBatisPlusConfig);
         init();
+    }
+
+    private void loadPersistentInfo(Integer workflowId) {
+
     }
 
     @Override

@@ -26,7 +26,7 @@ public class WorkflowConfigLoader implements IWorkflowConfigLoader {
     private Map<String, WfNode> taskMap;
     private Map<String, List<TransEndpoint<?>>> transition;
     @Override
-    public void loadConfig(String fileName) throws IOException, SAXException, ParserConfigurationException {
+    public Long loadConfig(String fileName) throws IOException, SAXException, ParserConfigurationException {
         InputStream inputStream = WorkflowConfigLoader.class.getClassLoader().getResourceAsStream(fileName);
         if (inputStream == null) {
             log.error("read workflow xml error.");
@@ -38,6 +38,16 @@ public class WorkflowConfigLoader implements IWorkflowConfigLoader {
         Document document = builder.parse(inputStream);
 
         Element catalog = document.getDocumentElement();
+
+        // workflow id get
+        NodeList workflowIdNodeList = catalog.getElementsByTagName("id");
+        if (workflowIdNodeList.getLength() == 0) {
+            log.info("Workflow id doesn't exist here in xml.");
+            throw new RuntimeException("Workflow id doesn't exist here in xml.");
+        }
+        Long id = Long.valueOf(workflowIdNodeList.item(0).getTextContent());
+
+
         // node get
         NodeList tasks = catalog.getElementsByTagName("nodes");
         taskMap = getTasks(tasks);
@@ -45,6 +55,8 @@ public class WorkflowConfigLoader implements IWorkflowConfigLoader {
         // transitions get
         NodeList trans = catalog.getElementsByTagName("transitions");
         transition = getTransition(trans);
+
+        return id;
     }
 
     @Override

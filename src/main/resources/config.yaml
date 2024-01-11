@@ -3,3 +3,9 @@ tinyworkflow:
     core-size: 8
     max-size: 32
     keep-alive-time: 10
+  mybatis-plus:
+    jdbcUrl: jdbc:mysql://123.56.98.228:3306/tinyworkflow?allowPublicKeyRetrieval=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8&useUnicode=true
+    userName: root
+    password: YUNFEI
+    driverName: com.mysql.cj.jdbc.Driver
+    daoPackageName: com.yunfei.tinyworkflow.dao

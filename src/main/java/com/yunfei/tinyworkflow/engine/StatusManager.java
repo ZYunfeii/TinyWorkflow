@@ -156,6 +156,9 @@ public class StatusManager {
     public NodeStatus getNodeStatusById(String id) {
         return taskMap.get(id).getNodeStatus();
     }
+    public void setNodeStatus(String id, NodeStatus nodeStatus) {
+        taskMap.get(id).setNodeStatus(nodeStatus);
+    }
 
     private void initNode() {
         taskMap.forEach((k, v)->{

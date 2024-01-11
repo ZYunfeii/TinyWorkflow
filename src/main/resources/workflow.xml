@@ -1,4 +1,5 @@
 <workflow>
+    <id>1001001</id>
     <nodes>
         <start-node id="start" />
         <task-node id="task1">

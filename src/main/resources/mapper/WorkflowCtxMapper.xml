@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunfei.tinyworkflow.dao.WorkflowCtxDao">
+    <sql id="allColumns">
+        workflow_id AS workflowId,
+        gmt_created AS gmtCreated,
+        gmt_modified AS gmtModified,
+        context AS ctx
+    </sql>
+
+    <select id="query" resultType="com.yunfei.tinyworkflow.entity.WorkflowCtxDo">
+        SELECT
+        <include refid="allColumns"></include>
+        FROM
+        `workflow_context`
+        <where>
+            <if test="workflowId != null">
+                AND `workflow_context`.`workflow_id` = #{workflowId}
+            </if>
+            <if test="gmtCreated != null">
+                AND `workflow_context`.`gmt_created` = #{gmtCreated}
+            </if>
+            <if test="gmtModified != null">
+                AND `workflow_context`.`gmt_modified` = #{gmtModified}
+            </if>
+            <if test="ctx != null">
+                AND `workflow_context`.`context` = #{ctx}
+            </if>
+            AND
+            `workflow_context`.`is_deleted` = 0
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.yunfei.tinyworkflow.entity.WorkflowCtxDo">
+        INSERT INTO `workflow_context` (`workflow_id`,`gmt_created`,`gmt_modified`,`context`)
+        VALUES (#{workflowId},now(),now(),#{ctx})
+    </insert>
+
+    <update id="update" parameterType="com.yunfei.tinyworkflow.entity.WorkflowCtxDo">
+        UPDATE `workflow_context`
+        <set>
+            <if test="workflowId != null">
+                `workflow_context`.`workflow_id` = #{workflowId},
+            </if>
+            <if test="gmtCreated != null">
+                `workflow_context`.`gmt_created` = #{gmtCreated},
+            </if>
+            <if test="gmtModified != null">
+                `workflow_context`.`gmt_modified` = #{gmtModified},
+            </if>
+            <if test="ctx != null">
+                `workflow_context`.`context` = #{ctx},
+            </if>
+            `gmt_modified` = now()
+        </set>
+        WHERE
+        `workflow_context`.`workflow_id` = #{workflowId}
+    </update>
+
+    <update id="delete" parameterType="com.yunfei.tinyworkflow.entity.WorkflowCtxDo">
+        UPDATE `workflow_context`
+        SET is_deleted = 1
+        WHERE
+        <choose>
+            <when test="workflowId != null">
+                `workflow_context`.`workflow_id` = #{workflowId}
+            </when>
+            <when test="gmtCreated != null">
+                `workflow_context`.`gmt_created` = #{gmtCreated}
+            </when>
+            <when test="gmtModified != null">
+                `workflow_context`.`gmt_modified` = #{gmtModified}
+            </when>
+            <when test="ctx != null">
+                `workflow_context`.`context` = #{ctx}
+            </when>
+        </choose>
+        AND is_deleted = 0
+    </update>
+
+</mapper>
