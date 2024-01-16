@@ -1,11 +1,14 @@
 package com.yunfei.tinyworkflow.engine;
 
 import com.yunfei.tinyworkflow.loader.*;
+import com.yunfei.tinyworkflow.node.NodeStatus;
 import com.yunfei.tinyworkflow.node.TaskNode;
 import com.yunfei.tinyworkflow.node.WfNode;
 import com.yunfei.tinyworkflow.threadpool.WfThreadPoolFactory;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 
@@ -35,10 +38,29 @@ public class WfEngine implements IWfEngine {
         WfMyBatisPlusConfig wfMyBatisPlusConfig = engineConfigLoader.getWfMyBatisPlusConfig();
         PersistenceManager.init(wfMyBatisPlusConfig);
         init();
-    }
 
-    private void loadPersistentInfo(Integer workflowId) {
+        WfContext context = Objects.requireNonNull(PersistenceManager.getInstance()).getContext(workflowId);
+        TaskMapIterator taskMapIterator = scheduler.getTaskMapIterator();
 
+        if (context != null) {
+            ctx = context;
+            log.info("There is no corresponding workflow context for workflowId:{} in the database.", workflowId);
+            log.info("Begin to store the meta data to database...");
+        }
+
+        while (taskMapIterator.hasNext()) {
+            Map.Entry<String, WfNode> entry = taskMapIterator.next();
+            String taskName = entry.getKey();
+            WfNode node = entry.getValue();
+            if (context == null) {
+                PersistenceManager.getInstance().setNodeStatus(workflowId, taskName, node.getNodeStatus());
+            } else {
+                NodeStatus nodeStatus = PersistenceManager.getInstance().getNodeStatus(workflowId, taskName);
+                if (nodeStatus != null) {
+                    scheduler.setNodeStatus(taskName, nodeStatus);
+                }
+            }
+        }
     }
 
     @Override

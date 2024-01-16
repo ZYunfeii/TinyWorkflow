@@ -21,6 +21,7 @@
         <mybatis-plus.version>3.4.3</mybatis-plus.version>
         <mysql.version>8.0.23</mysql.version>
         <hikaricp.version>4.0.3</hikaricp.version>
+        <fastjson.version>1.2.78</fastjson.version>
     </properties>
 
     <dependencies>
@@ -77,6 +78,12 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>${hikaricp.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
         </dependency>
 
     </dependencies>

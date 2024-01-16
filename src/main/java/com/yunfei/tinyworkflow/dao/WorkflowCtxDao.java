@@ -7,5 +7,5 @@ import com.yunfei.tinyworkflow.entity.WorkflowCtxDo;
 import java.util.List;
 
 public interface WorkflowCtxDao extends BaseMapper {
-    List<TaskDo> query(WorkflowCtxDo workflowCtxDo);
+    List<WorkflowCtxDo> query(WorkflowCtxDo workflowCtxDo);
 }

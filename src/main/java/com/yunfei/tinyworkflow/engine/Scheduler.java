@@ -38,7 +38,11 @@ public class Scheduler {
         WfThreadPoolFactory.getInstance().submit(new RunNodeTask(startNode, ctx));
     }
 
-    public void setNodeStatus(String  id, NodeStatus nodeStatus) {
+    public TaskMapIterator getTaskMapIterator() {
+        return statusManager.getTaskMapIterator();
+    }
+
+    public void setNodeStatus(String id, NodeStatus nodeStatus) {
         statusManager.setNodeStatus(id, nodeStatus);
     }
 

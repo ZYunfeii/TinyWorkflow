@@ -221,16 +221,16 @@ public class TestMysql {
         WorkflowCtxDao mapper = session.getMapper(WorkflowCtxDao.class);
         WorkflowCtxDo workflowCtxDo = new WorkflowCtxDo();
         workflowCtxDo.setWorkflowId(1231231L);
-        List<TaskDo> query = mapper.query(workflowCtxDo);
+        List<WorkflowCtxDo> query = mapper.query(workflowCtxDo);
         System.out.println(query);
     }
 
     @Test
     public void testQueryWorkflowTask() {
-        WorkflowCtxDao mapper = session.getMapper(WorkflowCtxDao.class);
-        WorkflowCtxDo workflowCtxDo = new WorkflowCtxDo();
-        workflowCtxDo.setWorkflowId(1231231L);
-        List<TaskDo> query = mapper.query(workflowCtxDo);
+        TaskDao mapper = session.getMapper(TaskDao.class);
+        TaskDo taskDo = new TaskDo();
+        taskDo.setWorkflowId(234123L);
+        List<TaskDo> query = mapper.query(taskDo);
         System.out.println(query);
     }
 

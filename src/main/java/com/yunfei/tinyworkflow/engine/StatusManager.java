@@ -23,7 +23,9 @@ public class StatusManager {
 
     private WfNode endNode;
     private WfNode startNode;
-
+    public TaskMapIterator getTaskMapIterator() {
+        return new TaskMapIterator(taskMap);
+    }
     public void init() {
         upStreamNodeCompletedCount.clear();
         initNode();
