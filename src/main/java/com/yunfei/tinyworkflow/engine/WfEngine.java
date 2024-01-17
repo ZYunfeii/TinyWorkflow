@@ -44,9 +44,9 @@ public class WfEngine implements IWfEngine {
 
         if (context != null) {
             ctx = context;
+        } else {
             log.info("There is no corresponding workflow context for workflowId:{} in the database.", workflowId);
             log.info("Begin to store the meta data to database...");
-        } else {
             PersistenceManager.getInstance().setContext(workflowId, ctx);
         }
 

@@ -46,17 +46,7 @@ public class MyBatisPlusUtil {
     private SqlSessionFactory sqlSessionFactory;
     private static ThreadLocal<SqlSession> threadLocal = new ThreadLocal<>();
     public SqlSession getSession() {
-        if (sqlSessionFactory == null) {
-            log.info("please invoke init firstly!");
-            return null;
-        }
-        if (threadLocal.get() == null) {
-            SqlSession sqlSession = sqlSessionFactory.openSession();
-            threadLocal.set(sqlSession);
-            return sqlSession;
-        } else {
-            return threadLocal.get();
-        }
+        return sqlSessionFactory.openSession();
     }
     public void init() throws IOException {
         SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();

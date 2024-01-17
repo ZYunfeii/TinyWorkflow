@@ -69,9 +69,6 @@
             <if test="status != null">
                 `workflow`.`status` = #{status},
             </if>
-            <if test="workflowId != null">
-                `workflow`.`workflow_id` = #{workflowId}
-            </if>
             `gmt_modified` = now()
         </set>
         WHERE

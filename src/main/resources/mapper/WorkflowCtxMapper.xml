@@ -40,9 +40,6 @@
     <update id="update" parameterType="com.yunfei.tinyworkflow.entity.WorkflowCtxDo">
         UPDATE `workflow_context`
         <set>
-            <if test="workflowId != null">
-                `workflow_context`.`workflow_id` = #{workflowId},
-            </if>
             <if test="gmtCreated != null">
                 `workflow_context`.`gmt_created` = #{gmtCreated},
             </if>

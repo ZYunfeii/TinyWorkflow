@@ -48,8 +48,13 @@ public class PersistenceManager {
         return instance;
     }
 
-
+    private Integer ctxSizeLast = 0;
     public void setContext(Long workflowId, WfContext wfContext) {
+        log.info("Begin to set workflow context: workflowId:{}", workflowId);
+        if (wfContext.getResult().size() < ctxSizeLast) {
+            log.info("already update the context.");
+            return;
+        }
         SqlSession session = myBatisPlusUtil.getSession();
         WorkflowCtxDao mapper = session.getMapper(WorkflowCtxDao.class);
         WorkflowCtxDo workflowCtxDo = new WorkflowCtxDo();
@@ -62,7 +67,9 @@ public class PersistenceManager {
         } else {
             mapper.insert(workflowCtxDo);
         }
+        ctxSizeLast = wfContext.getResult().size();
         session.commit();
+        session.close();
     }
 
     public WfContext getContext(Long workflowId) {
@@ -71,6 +78,7 @@ public class PersistenceManager {
         WorkflowCtxDo workflowCtxDo = new WorkflowCtxDo();
         workflowCtxDo.setWorkflowId(workflowId);
         List<WorkflowCtxDo> query = mapper.query(workflowCtxDo);
+        session.close();
         if (query.isEmpty()) {
             log.info("There is no workflow corresponding to the workflowId:{}.", workflowId);
             return null;
@@ -88,6 +96,7 @@ public class PersistenceManager {
         taskDo.setTaskName(taskName);
         taskDo.setWorkflowId(workflowId);
         List<TaskDo> query = mapper.query(taskDo);
+        session.close();
         if (query.isEmpty()) {
             log.info("There is no corresponding task.");
             return null;
@@ -99,6 +108,7 @@ public class PersistenceManager {
     }
 
     public void setNodeStatus(Long workflowId, String taskName, NodeStatus nodeStatus) {
+        log.info("Begin to set node status: workflowId:{}, taskName:{}, nodeStatus:{}", workflowId, taskName, nodeStatus.toString());
         SqlSession session = myBatisPlusUtil.getSession();
         TaskDao mapper = session.getMapper(TaskDao.class);
         TaskDo taskDo = new TaskDo();
@@ -113,6 +123,7 @@ public class PersistenceManager {
             mapper.insert(taskDo);
         }
         session.commit();
+        session.close();
     }
 
 

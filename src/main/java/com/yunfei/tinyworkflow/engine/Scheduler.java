@@ -73,6 +73,15 @@ public class Scheduler {
             runNode(node, ctx);
         }
     }
+
+    private void workflowEnd() {
+        try {
+            barrier.await();
+        } catch (InterruptedException | BrokenBarrierException e) {
+            log.error("barrier await error.");
+            throw new RuntimeException(e);
+        }
+    }
     private void runNode(WfNode node, WfContext ctx) {
         if (stopAtomicFlag.get()) {
             log.info("The stop condition has been met. Node: {}", node.getId());
@@ -80,6 +89,11 @@ public class Scheduler {
         }
         List<TransEndpoint<?>> trans = statusManager.getTrans(node);
         if (node.getNodeStatus().equals(NodeStatus.COMPLETED)) {
+            if (node.getNodeType().equals(NodeType.END)) {
+                log.info("work flow run completed!");
+                workflowEnd();
+                return;
+            }
             runChildren(trans, node, ctx);
             return;
         }
@@ -91,14 +105,9 @@ public class Scheduler {
             if (asyncCallback != null) {
                 asyncCallback.onComplete(ctx.getCallbackResult());
             }
-            try {
-                barrier.await();
-            } catch (InterruptedException | BrokenBarrierException e) {
-                log.error("barrier await error.");
-                throw new RuntimeException(e);
-            }
             node.setNodeStatus(NodeStatus.COMPLETED);
             PersistenceManager.getInstance().setNodeStatus(workflowId, node.getId(), NodeStatus.COMPLETED);
+            workflowEnd();
             return;
         }
         if (node.getNodeType().equals(NodeType.TASK)) {
