@@ -21,6 +21,7 @@ public class Scheduler {
     private WfAsyncCallback<Object> asyncCallback;
     private AtomicBoolean stopAtomicFlag;
     private CyclicBarrier barrier;
+    private Long workflowId;
     public void awaitUntilAllCompleted() {
         try {
             barrier.await();
@@ -96,6 +97,8 @@ public class Scheduler {
                 log.error("barrier await error.");
                 throw new RuntimeException(e);
             }
+            node.setNodeStatus(NodeStatus.COMPLETED);
+            PersistenceManager.getInstance().setNodeStatus(workflowId, node.getId(), NodeStatus.COMPLETED);
             return;
         }
         if (node.getNodeType().equals(NodeType.TASK)) {
@@ -104,6 +107,8 @@ public class Scheduler {
             while (taskNode.getCurRetries() < maxRetries + 1) {
                 try {
                     taskNode.work(ctx);
+                    // FIXME: 更新丢失问题
+                    PersistenceManager.getInstance().setContext(workflowId, ctx);
                 } catch (Exception e) {
                     if (taskNode.getCurRetries() >= maxRetries) {
                         log.warn("The maximum number of retries has been reached for node:{}.", taskNode.getId());
@@ -119,6 +124,7 @@ public class Scheduler {
             }
         }
         node.setNodeStatus(NodeStatus.COMPLETED);
+        PersistenceManager.getInstance().setNodeStatus(workflowId, node.getId(), NodeStatus.COMPLETED);
         runChildren(trans, node, ctx);
     }
 

@@ -75,7 +75,7 @@
             `gmt_modified` = now()
         </set>
         WHERE
-        `workflow`.`task_id` = #{taskId}
+        `workflow`.`workflow_id` = #{workflowId} AND `workflow`.`task_name` = #{taskName}
     </update>
 
     <update id="delete" parameterType="com.yunfei.tinyworkflow.entity.TaskDo">

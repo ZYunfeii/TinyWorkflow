@@ -19,9 +19,9 @@ public class WfEngine implements IWfEngine {
     private final String engineConfigFileName = "config.yaml";
     private Scheduler scheduler;
     private WfContext ctx = new WfContext();
+    private Long workflowId;
     @Override
     public void initWithWorkflowConfigFile(String workflowConfigFilePath) {
-        Long workflowId;
         try {
             workflowId = workflowConfigLoader.loadConfig(workflowConfigFilePath);
             engineConfigLoader.loadConfig(engineConfigFileName);
@@ -33,7 +33,7 @@ public class WfEngine implements IWfEngine {
         WfThreadPoolFactory.setWfThreadPoolConfigPara(wfThreadPoolConfig.getCoreSize(), wfThreadPoolConfig.getMaxSize(),
                 wfThreadPoolConfig.getKeepAliveTime());
         StatusManager statusManager = new StatusManager(workflowConfigLoader.getTasksMap(), workflowConfigLoader.getWfTrans());
-        scheduler = Scheduler.builder().statusManager(statusManager).barrier(new CyclicBarrier(2)).
+        scheduler = Scheduler.builder().statusManager(statusManager).barrier(new CyclicBarrier(2)).workflowId(workflowId).
                 build();
         WfMyBatisPlusConfig wfMyBatisPlusConfig = engineConfigLoader.getWfMyBatisPlusConfig();
         PersistenceManager.init(wfMyBatisPlusConfig);
@@ -46,6 +46,8 @@ public class WfEngine implements IWfEngine {
             ctx = context;
             log.info("There is no corresponding workflow context for workflowId:{} in the database.", workflowId);
             log.info("Begin to store the meta data to database...");
+        } else {
+            PersistenceManager.getInstance().setContext(workflowId, ctx);
         }
 
         while (taskMapIterator.hasNext()) {

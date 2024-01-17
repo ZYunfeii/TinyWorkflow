@@ -19,7 +19,7 @@ import java.util.List;
 public class PersistenceManager {
     private MyBatisPlusUtil myBatisPlusUtil;
 
-    private static PersistenceManager instance;
+    private static volatile PersistenceManager instance;
     private PersistenceManager(WfMyBatisPlusConfig wfMyBatisPlusConfig) {
         myBatisPlusUtil = MyBatisPlusUtil.builder().daoPackageName(wfMyBatisPlusConfig.getDaoPackageName()).
                 driverName(wfMyBatisPlusConfig.getDriverName()).userName(wfMyBatisPlusConfig.getUserName()).
@@ -48,13 +48,20 @@ public class PersistenceManager {
         return instance;
     }
 
+
     public void setContext(Long workflowId, WfContext wfContext) {
         SqlSession session = myBatisPlusUtil.getSession();
         WorkflowCtxDao mapper = session.getMapper(WorkflowCtxDao.class);
         WorkflowCtxDo workflowCtxDo = new WorkflowCtxDo();
         workflowCtxDo.setWorkflowId(workflowId);
+
+        List<WorkflowCtxDo> query = mapper.query(workflowCtxDo);
         workflowCtxDo.setCtx(JSON.toJSONString(wfContext));
-        mapper.insert(workflowCtxDo);
+        if (!query.isEmpty()) {
+            mapper.update(workflowCtxDo);
+        } else {
+            mapper.insert(workflowCtxDo);
+        }
         session.commit();
     }
 
@@ -97,8 +104,14 @@ public class PersistenceManager {
         TaskDo taskDo = new TaskDo();
         taskDo.setTaskName(taskName);
         taskDo.setWorkflowId(workflowId);
+
+        List<TaskDo> query = mapper.query(taskDo);
         taskDo.setStatus(nodeStatus.toString());
-        mapper.insert(taskDo);
+        if (!query.isEmpty()) {
+            mapper.update(taskDo);
+        } else {
+            mapper.insert(taskDo);
+        }
         session.commit();
     }
 

@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface WorkflowCtxDao extends BaseMapper {
     List<WorkflowCtxDo> query(WorkflowCtxDo workflowCtxDo);
+
+    void update(WorkflowCtxDo workflowCtxDo);
 }

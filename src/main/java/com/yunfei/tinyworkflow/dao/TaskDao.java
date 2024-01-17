@@ -8,4 +8,6 @@ import java.util.List;
 public interface TaskDao extends BaseMapper {
     List<TaskDo> query(TaskDo taskDo);
     List<TaskDo> queryAll();
+
+    void update(TaskDo taskDo);
 }
