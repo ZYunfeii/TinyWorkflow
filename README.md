@@ -9,10 +9,12 @@ Tinyworkflow是一款非常轻量级的简易工作流引擎，核心代码只�
 Use TinyWorkflow XML to describe this workflow:
 ```xml
 <workflow>
+    <id>1001001</id>
     <nodes>
         <start-node id="start" />
         <task-node id="task1">
             <assignee>com.yunfei.tinyworkflow.task.TestTask_1</assignee>
+            <max-retry>3</max-retry>
         </task-node>
         <decision-node id="decision1"/>
         <decision-node id="decision2"/>
@@ -42,6 +44,44 @@ Use TinyWorkflow XML to describe this workflow:
     </transitions>
 </workflow>
 
+```
+
+Before run the engine, please write the config.yaml:
+```yaml
+tinyworkflow:
+  thread-pool:
+    core-size: 8
+    max-size: 32
+    keep-alive-time: 10
+  mybatis-plus:
+    jdbcUrl: jdbc:mysql://ip:3306/tinyworkflow?allowPublicKeyRetrieval=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8&useUnicode=true
+    userName: root
+    password: PASS
+    driverName: com.mysql.cj.jdbc.Driver
+    daoPackageName: com.yunfei.tinyworkflow.dao
+```
+Tinyworkflow needs to create two tables in MySQL:
+```sql
+CREATE TABLE `workflow_context` (
+                                    `workflow_id` bigint(32) NOT NULL,
+                                    `gmt_created` datetime DEFAULT CURRENT_TIMESTAMP,
+                                    `gmt_modified` datetime DEFAULT CURRENT_TIMESTAMP,
+                                    `context` text CHARACTER SET latin1,
+                                    `is_deleted` tinyint(1) DEFAULT '0',
+                                    PRIMARY KEY (`workflow_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+
+CREATE TABLE `workflow` (
+                            `id` bigint(32) NOT NULL AUTO_INCREMENT,
+                            `workflow_id` bigint(32) DEFAULT NULL,
+                            `gmt_created` datetime DEFAULT CURRENT_TIMESTAMP,
+                            `gmt_modified` datetime DEFAULT CURRENT_TIMESTAMP,
+                            `task_name` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+                            `status` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+                            `is_deleted` tinyint(1) DEFAULT '0',
+                            PRIMARY KEY (`id`),
+                            UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8mb4
 ```
 ## Run 
 ```java

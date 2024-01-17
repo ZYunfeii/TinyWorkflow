@@ -6,6 +6,6 @@ tinyworkflow:
   mybatis-plus:
     jdbcUrl: jdbc:mysql://123.56.98.228:3306/tinyworkflow?allowPublicKeyRetrieval=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8&useUnicode=true
     userName: root
-    password: YUNFEI
+    password: XXX
     driverName: com.mysql.cj.jdbc.Driver
     daoPackageName: com.yunfei.tinyworkflow.dao
